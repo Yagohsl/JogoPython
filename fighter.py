@@ -23,6 +23,7 @@ class Fighter():
     self.hit = False
     self.health = 100
     self.alive = True
+    self.defending = False
     
     
 
@@ -39,7 +40,7 @@ class Fighter():
 
 
   def move(self, screen_width, screen_height, surface, target, round_over):
-    speed = 10
+    speed = 6
     gravity = 2
     dx = 0
     dy = 0
@@ -103,6 +104,10 @@ class Fighter():
           self.attack(target)
           self.attack_type = 2
 
+        #defense
+        if key[pygame.K_e]:
+          self.defending = True
+
     #apply gravity
     self.vel_y += gravity
     dy += self.vel_y
@@ -141,11 +146,14 @@ class Fighter():
       self.update_action(6)#6:death
     elif self.hit == True:
       self.update_action(5)#5:hit
+
     elif self.attacking == True:
       if self.attack_type == 1:
         self.update_action(3)#3:attack1
+
       elif self.attack_type == 2:
         self.update_action(4)#4:attack2
+        
     elif self.jump == True and self.running == False:
       self.update_action(2)#2:jump
     elif self.running == True and self.jump == False:
@@ -154,9 +162,15 @@ class Fighter():
       self.update_action(7) # mortal
     else:
       self.update_action(0)#0:idle
-    animation_cooldown = 60
+    animation_cooldown = 70
+
+    #velocidade de cada animação
+    animation_speeds = [100, 70, 70, 70, 70, 70,160, 150]
+    animation_cooldown = animation_speeds[self.action]
+
     #update image
     self.image = self.animation_list[self.action][self.frame_index]
+
     #check if enough time has passed since the last update
     if pygame.time.get_ticks() - self.update_time > animation_cooldown:
       self.frame_index += 1

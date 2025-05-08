@@ -18,7 +18,7 @@ screen = pygame.display.set_mode((1000, 600))
 screen = pygame.display.set_mode((screen_widht, screen_heigth))
 pygame.display.set_caption("Star Jedi Battleforce")
 
-#velocidade de freimes
+#velocidade de frames
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -66,7 +66,7 @@ def jogo():
   victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
   #velocidade de animacao
-  fighter1_animation_steps = [10, 8, 1, 7, 7, 3, 7, 5]
+  fighter1_animation_steps = [10, 8, 1, 4, 4, 3, 7, 5] #usando metade dos ataques
   fighter2_animation_steps = [8, 8, 1, 8, 8, 3, 7, 5]
 
   #fonte
