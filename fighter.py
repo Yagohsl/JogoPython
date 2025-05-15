@@ -24,6 +24,12 @@ class Fighter():
     self.health = 100
     self.alive = True
     self.defending = False
+    self.defense_key_held = False
+    self.defense_start_time = 0
+    self.min_defense_duration = 300
+    self.defense_break_threshold = 3  #número de hits antes de quebrar defesa
+    self.defense_hits_taken = 0  #contador de hits enquanto defende
+    self.defense_broken = False  #estado de defesa quebrada
     
     
 
@@ -52,13 +58,15 @@ class Fighter():
 
     #can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False:
+     
       #check player 1 controls
       if self.player == 1:
         #movement
-        if key[pygame.K_a]:
+
+        if key[pygame.K_a] and not self.defending:
           dx = -speed
           self.running = True
-        if key[pygame.K_d]:
+        if key[pygame.K_d] and not self.defending:
           dx = speed
           self.running = True
         #jump
@@ -77,6 +85,21 @@ class Fighter():
             self.attack_type = 1
           if key[pygame.K_t]:
             self.attack_type = 2
+
+
+      if self.defense_key_held and not self.defense_broken:
+        if not self.defending:
+          self.defending = True
+          self.defense_start_time = pygame.time.get_ticks()
+      else:
+        if self.defending:
+          time_defending = pygame.time.get_ticks() - self.defense_start_time
+          if time_defending >= self.min_defense_duration:
+            self.defending = False
+            self.defense_hits_taken = 0  # reset contador
+            self.defense_broken = False
+
+
       #check player 2 controls
       if self.player == 2:
         #movement
@@ -104,9 +127,7 @@ class Fighter():
           self.attack(target)
           self.attack_type = 2
 
-        #defense
-        if key[pygame.K_e]:
-          self.defending = True
+        
 
     #apply gravity
     self.vel_y += gravity
@@ -160,12 +181,16 @@ class Fighter():
       self.update_action(1)#1:run
     elif self.running == True and self.jump == True:
       self.update_action(7) # mortal
+    elif self.defending == True:
+      self.update_action(8) # defesa
+    elif self.defense_broken:
+      self.update_action(5)
     else:
       self.update_action(0)#0:idle
     animation_cooldown = 70
 
     #velocidade de cada animação
-    animation_speeds = [100, 70, 70, 70, 70, 70,160, 150]
+    animation_speeds = [100, 70, 70, 70, 70, 70,160, 150, 60]
     animation_cooldown = animation_speeds[self.action]
 
     #update image
@@ -180,6 +205,9 @@ class Fighter():
       #if the player is dead then end the animation
       if self.alive == False:
         self.frame_index = len(self.animation_list[self.action]) - 1
+        #certifica de travar no ultimo sprite na animação de defesa
+      elif self.action == 8 and self.defending:
+        self.frame_index = len(self.animation_list[self.action]) - 1
       else:
         self.frame_index = 0
         #check if an attack was executed
@@ -193,6 +221,10 @@ class Fighter():
           self.attacking = False
           self.attack_cooldown = 20
 
+    if self.action == 5:
+      self.defense_broken = False  #limpa estado de defesa quebrada
+
+
 
   def attack(self, target):
     if self.attack_cooldown == 0:
@@ -201,8 +233,18 @@ class Fighter():
       self.attack_sound.play()
       attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
       if attacking_rect.colliderect(target.rect):
-        target.health -= 10
-        target.hit = True
+        if target.defending:
+          target.defense_hits_taken += 1
+          if target.defense_hits_taken >= target.defense_break_threshold:
+            target.defending = False
+            target.defense_broken = True
+            target.hit = True
+            target.health -= 10  # dano cheio após quebra
+          else:
+            target.health -= 1  # dano reduzido
+        else:
+          target.health -= 10
+          target.hit = True
 
 
   def update_action(self, new_action):

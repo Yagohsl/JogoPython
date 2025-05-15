@@ -66,7 +66,7 @@ def jogo():
   victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
   #velocidade de animacao
-  fighter1_animation_steps = [10, 8, 1, 4, 4, 3, 7, 5] #usando metade dos ataques
+  fighter1_animation_steps = [10, 8, 1, 4, 4, 3, 7, 5, 3] #usando metade dos ataques
   fighter2_animation_steps = [8, 8, 1, 8, 8, 3, 7, 5]
 
   #fonte
@@ -180,6 +180,13 @@ def jogo():
         if event.key == pygame.K_ESCAPE:
           pygame.mixer.music.pause()
           main_menu()
+        if event.key == pygame.K_e:
+           fighter_1.defense_key_held = True
+      
+      if event.type == pygame.KEYUP:
+         if event.key == pygame.K_e:
+            fighter_1.defense_key_held = False
+           
   
 
 
