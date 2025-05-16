@@ -6,17 +6,52 @@ from fighters.fighterConstructor import FighterConstructor
 mixer.init()
 pygame.init()
 
+personagens_disponiveis = {
+    "anakin": {
+        "nome": "Anakin Skywalker",
+        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/fighter1.png"),
+        "classe": FighterConstructor.Anakin
+    },
+    "obiwan": {
+        "nome": "Obi-Wan Kenobi",
+        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png"),
+        "classe": FighterConstructor.Obiwan
+    }
+}
+
+# Lista de mapas disponíveis
+mapas_disponiveis = {
+    "templo": {
+        "nome": "Templo Jedi",
+        "imagem": pygame.image.load("assets/images/jogo/backgrounds/background.png"),
+        "caminho": "assets/images/jogo/backgrounds/background.png"
+    },
+    "mustafar": {
+        "nome": "Mustafar",
+        "imagem": pygame.image.load("assets/images/jogo/backgrounds/background2.png"),
+        "caminho": "assets/images/jogo/backgrounds/background2.png"
+    },
+    "kamino": {
+        "nome": "Kamino",
+        "imagem": pygame.image.load("assets/images/jogo/backgrounds/background3.png"),
+        "caminho": "assets/images/jogo/backgrounds/background3.png"
+    }
+}
+
+
 #tela de jogo
 screen_widht = 1000
 screen_heigth = 600
 
-icone = pygame.image.load ("assets/images/icons/icone.ico")
+icone = pygame.image.load ("assets/images/icon/icone.ico")
 pygame.display.set_icon(icone)
 
 screen = pygame.display.set_mode((1000, 600))
 
 screen = pygame.display.set_mode((screen_widht, screen_heigth))
 pygame.display.set_caption("Star Jedi Battleforce")
+
+fundo_selecao = pygame.image.load("assets/images/menu/fundo_selecao.png").convert()
 
 #velocidade de frames
 clock = pygame.time.Clock()
@@ -27,7 +62,92 @@ red = (247,93,0)
 yellow = (0, 255, 255)
 white = (255, 255, 255)
 
-def jogo(): 
+def draw_text(text, font, color, x, y):
+    img = font.render(text, True, color)
+    screen.blit(img, (x, y))
+
+# Função de texto (deve ser global, usada por várias telas)
+def draw_text_centered(text, font, color, y):
+    img = font.render(text, True, color)
+    x = (screen_widht - img.get_width()) // 2
+    screen.blit(img, (x, y))
+
+def selecionar_personagens():
+    selected = []
+    while True:
+        screen.blit(fundo_selecao, (0, 0))  # Substitui o fill preto pelo fundo personalizado
+        mouse_pos = pygame.mouse.get_pos()
+
+        draw_text_centered("Selecione os Personagens (Clique nos dois)", get_font(25), white, 40)
+
+        x = 200
+        for key, data in personagens_disponiveis.items():
+            image_scaled = pygame.transform.scale(data["imagem"], (100, 100))
+            rect = image_scaled.get_rect(center=(x, 200))
+            screen.blit(image_scaled, rect.topleft)
+
+            # Nome abaixo
+            draw_text(data["nome"], get_font(20), white, rect.centerx - 60, rect.bottom + 10)
+
+            # Hover effect
+            if rect.collidepoint(mouse_pos):
+                pygame.draw.rect(screen, yellow, rect, 3)
+                if pygame.mouse.get_pressed()[0]:
+                    if key not in selected:
+                        selected.append(key)
+                        pygame.time.wait(300)  # Anti-clique duplo
+
+            x += 250
+
+        if len(selected) == 2:
+            pygame.time.wait(500)
+            return selected[0], selected[1]
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        pygame.display.update()
+
+
+def selecionar_mapa():
+    pygame.time.wait(300)  # Pequena espera para evitar cliques fantasmas
+    while True:
+        screen.blit(fundo_selecao, (0, 0))  # Substitui o fill preto pelo fundo personalizado
+        mouse_pos = pygame.mouse.get_pos()
+
+        draw_text_centered("Selecione o Mapa", get_font(30), white, 50)
+
+        x = 150
+        rects = []
+        for i, (key, data) in enumerate(mapas_disponiveis.items()):
+            image_scaled = pygame.transform.scale(data["imagem"], (200, 100))
+            rect = image_scaled.get_rect(center=(x, 250))
+            screen.blit(image_scaled, rect.topleft)
+            draw_text(data["nome"], get_font(20), white, rect.centerx - 80, rect.bottom + 10)
+
+            if rect.collidepoint(mouse_pos):
+                pygame.draw.rect(screen, (0, 255, 255), rect, 3)
+
+            rects.append((rect, data["caminho"]))
+            x += 300
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for rect, caminho in rects:
+                    if rect.collidepoint(event.pos):
+                        return caminho
+
+        pygame.display.update()
+
+def get_font(size):
+    return pygame.font.Font("assets/fonts/Starjedi.ttf", size)
+
+def jogo(fighter1_class, fighter2_class, mapa_path):
   #variaveis do jogo
   intro_count = 3
   last_count_update = pygame.time.get_ticks()
@@ -41,21 +161,16 @@ def jogo():
   pygame.mixer.music.play(-1, 0.0, 5000)
 
   #imagens
-  bg_image = pygame.image.load("assets/images/jogo/background.png").convert_alpha()
-  versus_image = pygame.image.load("assets/images/icons/versus.png").convert_alpha()
-  player1_icon = pygame.image.load("assets/images/icons/fighter1.png").convert_alpha()
-  player2_icon = pygame.image.load("assets/images/icons/fighter2.png").convert_alpha()
-  victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
+  bg_image = pygame.image.load(mapa_path).convert_alpha()
+  versus_image = pygame.image.load("assets/images/jogo/icons/versus.png").convert_alpha()
+  player1_icon = pygame.image.load("assets/images/jogo/fighters/icons/fighter1.png").convert_alpha()
+  player2_icon = pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png").convert_alpha()
+  victory_img = pygame.image.load("assets/images/jogo/icons/victory.png").convert_alpha()
 
   #fonte
   count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
   score_font = pygame.font.Font("assets/fonts/turok.ttf", 25)
   name_font = pygame.font.Font("assets/fonts/turok.ttf", 25)
-
-  #texto
-  def draw_text(text, font, text_col, x, y):
-    img = font.render(text, True, text_col)
-    screen.blit(img, (x, y))
 
   #background
   def draw_bg():
@@ -70,8 +185,8 @@ def jogo():
     pygame.draw.rect(screen, yellow, (x, y, 400 * ratio, 30))
 
   #introduzindo lutadores
-  fighter_1 = FighterConstructor.Anakin()
-  fighter_2 = FighterConstructor.Obiwan()
+  fighter_1 = fighter1_class()
+  fighter_2 = fighter2_class()
 
   #redimensionando imagem
   player1_icon = pygame.transform.scale(player1_icon, (player1_icon.get_width() // 5, player1_icon.get_height() // 5))
@@ -177,15 +292,20 @@ def jogo():
 BG = pygame.image.load("assets/images/menu/FUNDO MENU.png")
 BGcredito = pygame.image.load("assets/images/menu/FUNDO CREDITO.png")
 
-def get_font(size):
-    return pygame.font.Font("assets/fonts/Starjedi.ttf", size)
-
 def play():
-    run = True
-    while run:
-        screen.blit(jogo())
-        pygame.display.update()
-    
+    pygame.mixer.music.stop()
+
+    personagem_1_key, personagem_2_key = selecionar_personagens()
+    print(f"Personagens escolhidos: {personagem_1_key}, {personagem_2_key}")
+
+    mapa_path = selecionar_mapa()
+    print(f"Mapa escolhido: {mapa_path}")
+
+    fighter1_class = personagens_disponiveis[personagem_1_key]["classe"]
+    fighter2_class = personagens_disponiveis[personagem_2_key]["classe"]
+
+    jogo(fighter1_class, fighter2_class, mapa_path)
+
 def options():
     while True:
         mouse_pos_cred = pygame.mouse.get_pos()
