@@ -157,10 +157,19 @@ def jogo():
           main_menu()
         if event.key == pygame.K_e:
            fighter_1.defense_key_held = True
+        if event.key == pygame.K_KP_3:
+           fighter_2.defense_key_held = True
+           
+
+
+
+           
       
       if event.type == pygame.KEYUP:
          if event.key == pygame.K_e:
             fighter_1.defense_key_held = False
+         if event.key == pygame.K_KP_3:
+            fighter_2.defense_key_held = False
 
     pygame.display.update()
 

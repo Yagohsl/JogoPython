@@ -69,7 +69,7 @@ class Fighter():
           dx = speed
           self.running = True
         #jump
-        if (key[pygame.K_w] and self.jump == False):
+        if (key[pygame.K_w] and not self.jump and not self.defending ):
           if self.running == True:
             self.vel_y = -35
           else:
@@ -77,7 +77,7 @@ class Fighter():
 
           self.jump = True
         #attack
-        if key[pygame.K_r] or key[pygame.K_t]:
+        if (key[pygame.K_r] or key[pygame.K_t]) and not self.defending:
           self.attack(target)
           #determine which attack type was used
           if key[pygame.K_r]:
@@ -117,14 +117,14 @@ class Fighter():
       #check player 2 controls
       if self.player == 2:
         #movement
-        if key[pygame.K_LEFT]:
+        if key[pygame.K_LEFT] and not self.defending:
           dx = -speed
           self.running = True
-        if key[pygame.K_RIGHT]:
+        if key[pygame.K_RIGHT] and not self.defending:
           dx = speed
           self.running = True
         #jump
-        if key[pygame.K_UP] and self.jump == False:
+        if key[pygame.K_UP] and self.jump == False and not self.defending:
           if self.running == True:
             self.vel_y = -30
           else: 
@@ -133,11 +133,11 @@ class Fighter():
 
         #attack
         # Aceita o número '9' e '0' da linha superior e '1' e '2' do teclado numérico
-        if key[pygame.K_9] or key[pygame.K_KP1]:
+        if (key[pygame.K_9] or key[pygame.K_KP1]) and not self.defending:
           self.attack(target)
           self.attack_type = 1
         
-        elif key[pygame.K_0] or key[pygame.K_KP2]:
+        elif (key[pygame.K_0] or key[pygame.K_KP2]) and not self.defending:
           self.attack(target)
           self.attack_type = 2
 
@@ -204,7 +204,7 @@ class Fighter():
     animation_cooldown = 70
 
     #velocidade de cada animação
-    animation_speeds = [100, 70, 70, 70, 70, 70,160, 150, 60]
+    animation_speeds = [100, 70, 70, 50, 50, 70,160, 150, 50]
     animation_cooldown = animation_speeds[self.action]
 
     #update image
@@ -251,24 +251,13 @@ class Fighter():
             target.defending = False
             target.defense_broken = True
             target.hit = True
-            target.health -= 10  # dano cheio após quebra
+            target.health -= 10  #dano cheio após quebra
           else:
-            target.health -= 1  # dano reduzido
+            target.health -= 1  #dano reduzido
         else:
           target.health -= 10
           target.hit = True
-        if target.defending:
-          target.defense_hits_taken += 1
-          if target.defense_hits_taken >= target.defense_break_threshold:
-            target.defending = False
-            target.defense_broken = True
-            target.hit = True
-            target.health -= 10  # dano cheio após quebra
-          else:
-            target.health -= 1  # dano reduzido
-        else:
-          target.health -= 10
-          target.hit = True
+        
 
 
   def update_action(self, new_action):
