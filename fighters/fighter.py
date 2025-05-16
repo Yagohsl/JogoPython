@@ -1,7 +1,7 @@
 import pygame
 
 class Fighter():
-  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps):
     self.player = player
     self.size = data[0]
     self.image_scale = data[1]
@@ -19,7 +19,8 @@ class Fighter():
     self.attacking = False
     self.attack_type = 0
     self.attack_cooldown = 0
-    self.attack_sound = sound
+    self.attack_sound = pygame.mixer.Sound("assets/audio/sword.mp3")
+    self.attack_sound.set_volume(2.0)
     self.hit = False
     self.health = 100
     self.alive = True
@@ -30,8 +31,6 @@ class Fighter():
     self.defense_break_threshold = 3  #número de hits antes de quebrar defesa
     self.defense_hits_taken = 0  #contador de hits enquanto defende
     self.defense_broken = False  #estado de defesa quebrada
-    
-    
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -223,8 +222,6 @@ class Fighter():
 
     if self.action == 5:
       self.defense_broken = False  #limpa estado de defesa quebrada
-
-
 
   def attack(self, target):
     if self.attack_cooldown == 0:

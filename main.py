@@ -1,7 +1,7 @@
 import pygame, sys
 from button import Button
 from pygame import mixer
-from fighter import Fighter
+from fighters.fighterConstructor import FighterConstructor
 
 mixer.init()
 pygame.init()
@@ -35,39 +35,17 @@ def jogo():
   round_over = False
   round_over_cooldown = 2000
 
-  #lutador 1
-  fighter1_size = 162
-  fighter1_scale = 3
-  fighter1_offset = [72, 40]
-  fighter1_data = [fighter1_size, fighter1_scale, fighter1_offset]
-  
-  #lutador 2
-  fighter2_size = 250
-  fighter_scale = 3
-  fighter_offset = [112, 106]
-  fighter_data = [fighter2_size, fighter_scale, fighter_offset]
-
   #musicas e sons
   pygame.mixer.music.load("assets/audio/music.mp3")
   pygame.mixer.music.set_volume(0.5)
   pygame.mixer.music.play(-1, 0.0, 5000)
-  sword_fx = pygame.mixer.Sound("assets/audio/sword.mp3")
-  sword_fx.set_volume(2.0)
-  sword2_fx = pygame.mixer.Sound("assets/audio/sword2.mp3")
-  sword2_fx.set_volume(0.3)
 
   #imagens
   bg_image = pygame.image.load("assets/images/jogo/background.png").convert_alpha()
   versus_image = pygame.image.load("assets/images/icons/versus.png").convert_alpha()
   player1_icon = pygame.image.load("assets/images/icons/fighter1.png").convert_alpha()
   player2_icon = pygame.image.load("assets/images/icons/fighter2.png").convert_alpha()
-  figther1_sheet = pygame.image.load("assets/images/jogo/fighter1.png").convert_alpha()
-  fighter2_sheet = pygame.image.load("assets/images/jogo/fighter2.png").convert_alpha()
   victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
-
-  #velocidade de animacao
-  fighter1_animation_steps = [10, 8, 1, 4, 4, 3, 7, 5, 3] #usando metade dos ataques
-  fighter2_animation_steps = [8, 8, 1, 8, 8, 3, 7, 5]
 
   #fonte
   count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
@@ -91,10 +69,9 @@ def jogo():
     pygame.draw.rect(screen, red, (x, y, 400, 30))
     pygame.draw.rect(screen, yellow, (x, y, 400 * ratio, 30))
 
-
   #introduzindo lutadores
-  fighter_1 = Fighter(1, 200, 310, False, fighter1_data, figther1_sheet, fighter1_animation_steps, sword_fx)
-  fighter_2 = Fighter(2, 700, 310, True, fighter_data, fighter2_sheet, fighter2_animation_steps, sword2_fx)
+  fighter_1 = FighterConstructor.Anakin()
+  fighter_2 = FighterConstructor.Obiwan()
 
   #redimensionando imagem
   player1_icon = pygame.transform.scale(player1_icon, (player1_icon.get_width() // 5, player1_icon.get_height() // 5))
@@ -155,7 +132,6 @@ def jogo():
       #exibir vitoria
       screen.blit(victory_img, (360, 150))
 
-
       #acaba jogo
       if score[0] == 2 or score[1] == 2:
         if pygame.time.get_ticks() - round_over_time > round_over_cooldown:
@@ -168,10 +144,9 @@ def jogo():
       if pygame.time.get_ticks() - round_over_time > round_over_cooldown:
         round_over = False
         intro_count = 3
-        fighter_1 = Fighter(1, 200, 310, False, fighter1_data, figther1_sheet, fighter1_animation_steps, sword_fx)
-        fighter_2 = Fighter(2, 700, 310, True, fighter_data, fighter2_sheet, fighter2_animation_steps, sword2_fx)
+        fighter_1 = FighterConstructor.Anakin()
+        fighter_2 = FighterConstructor.Obiwan()
       
-         
     #manipulando eventos
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -186,9 +161,6 @@ def jogo():
       if event.type == pygame.KEYUP:
          if event.key == pygame.K_e:
             fighter_1.defense_key_held = False
-           
-  
-
 
     pygame.display.update()
 
@@ -196,47 +168,30 @@ def jogo():
 BG = pygame.image.load("assets/images/menu/FUNDO MENU.png")
 BGcredito = pygame.image.load("assets/images/menu/FUNDO CREDITO.png")
 
-
 def get_font(size):
     return pygame.font.Font("assets/fonts/Starjedi.ttf", size)
-
 
 def play():
     run = True
     while run:
-       
-       
-
         screen.blit(jogo())
-
-
-
         pygame.display.update()
     
 def options():
     while True:
-        
         mouse_pos_cred = pygame.mouse.get_pos()
 
         screen.blit(BGcredito, (0, 0))
-        
 
-        cred_text = get_font(30).render("", True, "white")
-        cred_rect = cred_text.get_rect(center=(500, 260))
-        screen.blit(cred_text, cred_rect)
-
-        cred_back = Button(image=pygame.image.load("assets/images/menu/voltar.png"), pos=(500, 460), 
-                            text_input="", font=get_font(75), base_color="Black", hovering_color="Green")
-
-        cred_back.changeColor(mouse_pos_cred)
-        cred_back.update(screen)
+        cred_out_button = Button(image=pygame.image.load("assets/images/menu/voltar.png"), pos=(500, 460))
+        cred_out_button.update(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if cred_back.checkForInput(mouse_pos_cred):
+                if cred_out_button.checkForInput(mouse_pos_cred):
                     main_menu()
 
         pygame.display.update()
@@ -246,28 +201,15 @@ def main_menu():
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1, 0.0, 5000)
     while True:
-        
         screen.blit(BG, (0, 0))
-        
 
         mouse_pos_menu = pygame.mouse.get_pos()
 
-        menu_text = get_font(100).render("", True, "#b68f40")
-        menu_rect = menu_text.get_rect(center=(640, 100))
+        play_button = Button(image=pygame.image.load("assets/images/menu/jogar.png"), pos=(850, 200))
+        cred_button = Button(image=pygame.image.load("assets/images/menu/creditos.png"), pos=(850, 325))
+        exit_button = Button(image=pygame.image.load("assets/images/menu/sair.png"), pos=(850, 450))
 
-        play_button = Button(image=pygame.image.load("assets/images/menu/jogar.png"), pos=(850, 200), 
-                            text_input="", font=get_font(50), base_color="#d7fcd4", hovering_color="white")
-        cred_button = Button(image=pygame.image.load("assets/images/menu/creditos.png"), pos=(850, 325), 
-                            text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="white")
-        sair_button = Button(image=pygame.image.load("assets/images/menu/sair.png"), pos=(850, 450), 
-                            text_input="", font=get_font(75), base_color="#d7fcd4", hovering_color="white")
-
-        screen.blit(menu_text, menu_rect)
-        
-        
-
-        for button in [play_button, cred_button, sair_button]:
-            button.changeColor(mouse_pos_menu)
+        for button in [play_button, cred_button, exit_button]:
             button.update(screen)
         
         for event in pygame.event.get():
@@ -285,7 +227,7 @@ def main_menu():
                     play()
                 if cred_button.checkForInput(mouse_pos_menu):
                     options()
-                if sair_button.checkForInput(mouse_pos_menu):
+                if exit_button.checkForInput(mouse_pos_menu):
                     pygame.quit()
                     sys.exit()
 
