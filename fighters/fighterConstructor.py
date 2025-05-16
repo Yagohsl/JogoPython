@@ -3,8 +3,8 @@ from fighters.fighter import Fighter;
 
 class FighterConstructor():
     def Anakin():
-        fighter1_animation_steps = [10, 8, 1, 8, 8, 3, 7, 5, 3] #usando metade dos ataques
-        figther1_sheet = pygame.image.load("assets/images/jogo/fighter1.png").convert_alpha()
+        fighter1_animation_steps = [3, 8, 1, 8, 8, 3, 7, 5, 3] #usando metade dos ataques
+        figther1_sheet = pygame.image.load("assets/images/jogo/general.png").convert_alpha()
         player1_icon = pygame.image.load("assets/images/icons/fighter1.png").convert_alpha()
         fighter1_data = [162, 3, [72,40]] #size, scale, offset
         return Fighter(1, 200, 310, False, fighter1_data, figther1_sheet, fighter1_animation_steps)

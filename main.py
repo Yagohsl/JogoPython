@@ -183,6 +183,8 @@ def get_font(size):
 def play():
     run = True
     while run:
+        
+        
         screen.blit(jogo())
         pygame.display.update()
     
