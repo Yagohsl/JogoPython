@@ -99,6 +99,21 @@ class Fighter():
             self.defense_broken = False
 
 
+
+
+      if self.defense_key_held and not self.defense_broken:
+        if not self.defending:
+          self.defending = True
+          self.defense_start_time = pygame.time.get_ticks()
+      else:
+        if self.defending:
+          time_defending = pygame.time.get_ticks() - self.defense_start_time
+          if time_defending >= self.min_defense_duration:
+            self.defending = False
+            self.defense_hits_taken = 0  # reset contador
+            self.defense_broken = False
+
+
       #check player 2 controls
       if self.player == 2:
         #movement
@@ -230,6 +245,18 @@ class Fighter():
       self.attack_sound.play()
       attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height)
       if attacking_rect.colliderect(target.rect):
+        if target.defending:
+          target.defense_hits_taken += 1
+          if target.defense_hits_taken >= target.defense_break_threshold:
+            target.defending = False
+            target.defense_broken = True
+            target.hit = True
+            target.health -= 10  # dano cheio após quebra
+          else:
+            target.health -= 1  # dano reduzido
+        else:
+          target.health -= 10
+          target.hit = True
         if target.defending:
           target.defense_hits_taken += 1
           if target.defense_hits_taken >= target.defense_break_threshold:
