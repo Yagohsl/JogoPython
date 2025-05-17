@@ -6,18 +6,14 @@ from fighters.fighterConstructor import FighterConstructor
 mixer.init()
 pygame.init()
 
-personagens_disponiveis = {
-    "anakin": {
-        "nome": "Anakin Skywalker",
-        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/fighter1.png"),
-        "classe": FighterConstructor.Anakin
-    },
-    "obiwan": {
-        "nome": "Obi-Wan Kenobi",
-        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png"),
-        "classe": FighterConstructor.Obiwan
-    }
+personagens_disponiveis_icons = {
+    "anakin": pygame.image.load("assets/images/jogo/fighters/icons/fighter1.png"),
+    "obiwan": pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png"),
+    "grievous": pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png"),
 }
+
+player1 = [1, 200, 310, False]
+player2 = [2, 700, 310, True]
 
 # Lista de mapas disponíveis
 mapas_disponiveis = {
