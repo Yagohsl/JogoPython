@@ -1,0 +1,33 @@
+import pygame
+
+#Dados dos personagens
+AVALIABLE_CARACTERS = {
+        "Anakin": {
+            "name": "Anakin Skywalker",
+            "animation_steps": [3, 8, 1, 8, 8, 3, 7, 5, 3],
+            "sheet_path": pygame.image.load("assets/images/jogo/fighters/fighterAnakin.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/anakin.png"),
+            "data": [162, 3, [72, 40]]
+        },
+        "Obiwan": {
+            "name": "Obi-Wan Kenobi",
+            "animation_steps": [8, 8, 2, 8, 8, 3, 7, 5, 4],
+            "sheet_path": pygame.image.load("assets/images/jogo/fighters/fighter2.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/obiwan.png"),
+            "data": [250, 3, [112, 106]]
+        },
+        "General": {
+            "name": "General Grievous",
+            "animation_steps": [3, 8, 2, 8, 8, 3, 7, 5, 3],
+            "sheet_path": pygame.image.load("assets/images/jogo/fighters/general.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/grievious.png"),
+            "data": [250, 3, [112, 106]]
+        },
+        "Female_Jedi": {
+            "name": "Maria Jedi Sousa",
+            "animation_steps": [5, 10, 2, 8, 8, 3, 7, 5, 3],
+            "sheet_path": pygame.image.load("assets/images/jogo/fighters/female_jedi.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/anakin.png"),
+            "data": [250, 3, [112, 106]]
+        }
+    }
