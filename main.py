@@ -16,6 +16,16 @@ personagens_disponiveis = {
         "nome": "Obi-Wan Kenobi",
         "imagem": pygame.image.load("assets/images/jogo/fighters/icons/fighter2.png"),
         "classe": FighterConstructor.Obiwan
+    },
+    "maria_jedi": {
+        "nome": "Maria Jedi",
+        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/maria_jedi_icon.jpeg"),
+        "classe": FighterConstructor.Female_jedi
+    },
+    "General": {
+        "nome": "General Grievous",
+        "imagem": pygame.image.load("assets/images/jogo/fighters/icons/general_grevious_icon.jpeg"),
+        "classe": FighterConstructor.General
     }
 }
 
@@ -80,27 +90,30 @@ def selecionar_personagens():
 
         draw_text_centered("Selecione os Personagens (Clique nos dois)", get_font(25), white, 40)
 
-        x = 200
-        for key, data in personagens_disponiveis.items():
+        positions = [
+            (350, 200), (650, 200),
+            (350, 380), (650, 380)
+        ]
+
+        for idx, (key, data) in enumerate(personagens_disponiveis.items()):
+            if idx >= len(positions):
+                break
+
+            x, y = positions[idx]
             image_scaled = pygame.transform.scale(data["imagem"], (100, 100))
-            rect = image_scaled.get_rect(center=(x, 200))
+            rect = image_scaled.get_rect(center=(x, y))
             screen.blit(image_scaled, rect.topleft)
 
-            # Nome abaixo
             nome_text = get_font(20).render(data["nome"], True, white)
             nome_rect = nome_text.get_rect(center=(rect.centerx, rect.bottom + 15))
             screen.blit(nome_text, nome_rect)
 
-
-            # Hover effect
             if rect.collidepoint(mouse_pos):
                 pygame.draw.rect(screen, yellow, rect, 3)
                 if pygame.mouse.get_pressed()[0]:
                     if key not in selected:
                         selected.append(key)
-                        pygame.time.wait(300)  # Anti-clique duplo
-
-            x += 250
+                        pygame.time.wait(300)
 
         if len(selected) == 2:
             pygame.time.wait(500)
@@ -112,6 +125,7 @@ def selecionar_personagens():
                 sys.exit()
 
         pygame.display.update()
+
 
 
 def selecionar_mapa():
