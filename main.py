@@ -87,7 +87,10 @@ def selecionar_personagens():
             screen.blit(image_scaled, rect.topleft)
 
             # Nome abaixo
-            draw_text(data["nome"], get_font(20), white, rect.centerx - 60, rect.bottom + 10)
+            nome_text = get_font(20).render(data["nome"], True, white)
+            nome_rect = nome_text.get_rect(center=(rect.centerx, rect.bottom + 15))
+            screen.blit(nome_text, nome_rect)
+
 
             # Hover effect
             if rect.collidepoint(mouse_pos):
@@ -125,7 +128,9 @@ def selecionar_mapa():
             image_scaled = pygame.transform.scale(data["imagem"], (200, 100))
             rect = image_scaled.get_rect(center=(x, 250))
             screen.blit(image_scaled, rect.topleft)
-            draw_text(data["nome"], get_font(20), white, rect.centerx - 80, rect.bottom + 10)
+            nome_text = get_font(20).render(data["nome"], True, white)
+            nome_rect = nome_text.get_rect(center=(rect.centerx, rect.bottom + 15))
+            screen.blit(nome_text, nome_rect)
 
             if rect.collidepoint(mouse_pos):
                 pygame.draw.rect(screen, (0, 255, 255), rect, 3)
