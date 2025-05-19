@@ -33,7 +33,7 @@ def map_select_screen(game_state):
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     for key, data in MAPS.items():
-                        image_scaled = pygame.transform.scale(data[key]["imagem"], (150, 250))
+                        image_scaled = pygame.transform.scale(map_images[key], (150, 250))
                         rect = image_scaled.get_rect(center=(150 + list(MAPS.keys()).index(key) * 250, SCREEN_HEIGHT//2))
                         if rect.collidepoint(event.pos):
                             pygame.time.wait(300)

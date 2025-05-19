@@ -48,7 +48,7 @@ def character_select(game_state):
                 game_state["player1"] = FighterPlayer(
                     name=char_config["name"],animation_steps=char_config["animation_steps"],
                     sprite_sheet=char_config["sheet_path"],icon=char_config["icon"],
-                    data=char_config["data"],player=2,x=200,y=310,flip=False)
+                    data=char_config["data"],player=1,x=200,y=310,flip=False)
                 
                 char_config = AVALIABLE_CARACTERS[selected[1]]
                 game_state["player2"] = FighterPlayer(

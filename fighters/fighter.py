@@ -8,10 +8,11 @@ class Fighter():
     self.offset = data[2]
     self.flip = flip
     self.animation_list = self.load_images(sprite_sheet, animation_steps)
-    self.action = 0#0:idle #1:run #2:jump #3:attack1 #4: attack2 #5:hit #6:death #mortal
+    self.action = 0 #0:idle #1:run #2:jump #3:attack1 #4:attack2 #5:hit #6:death #7:mortal #8:defense
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
+    self.start_x = x
     self.rect = pygame.Rect((x, y, 80, 180))
     self.vel_y = 0
     self.running = False
@@ -42,6 +43,12 @@ class Fighter():
         temp_img_list.append(pygame.transform.scale(temp_img, (self.size * self.image_scale, self.size * self.image_scale)))
       animation_list.append(temp_img_list)
     return animation_list
+
+  def reset(self):
+    self.health = 100
+    self.alive = True
+    self.rect.x = self.start_x
+    self.hit = False
 
 
   def move(self, screen_width, screen_height, surface, target, round_over):
