@@ -39,6 +39,10 @@ class BattleScreen:
             draw_health_bar(self.fighter1.health, 20, 100)
             draw_health_bar(self.fighter2.health, 580, 100)
 
+            # Desenha barra de energia especial
+            pygame.draw.rect(SCREEN, (0, 0, 255), (self.fighter1.rect.x, self.fighter1.rect.y - 20, self.fighter1.special_energy, 10))
+            pygame.draw.rect(SCREEN, (0, 0, 255), (self.fighter2.rect.x, self.fighter2.rect.y - 20, self.fighter2.special_energy, 10))
+
             #inserindo nomes
             draw_text(self.fighter1.name, get_font(25), WHITE, 110, 50)
             draw_text(self.fighter2.name, get_font(25), WHITE, 580, 50)

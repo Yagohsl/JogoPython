@@ -32,6 +32,25 @@ class Fighter():
     self.defense_break_threshold = 3  #número de hits antes de quebrar defesa
     self.defense_hits_taken = 0  #contador de hits enquanto defende
     self.defense_broken = False  #estado de defesa quebrada
+    self.special_energy = 100
+    self.max_special_energy = 100
+    self.special_cost = 30
+    self.using_special = False
+
+  def special_attack(self, target):
+      if not self.attacking and self.attack_cooldown == 0:
+          self.attacking = True
+          self.using_special = True
+          self.attack_type = 3  # você pode mudar se tiver uma animação própria
+          self.special_energy -= self.special_cost
+          self.attack_sound.play()
+
+          attack_range = pygame.Rect(self.rect.centerx - (2.5 * self.rect.width * self.flip), self.rect.y, 2.5 * self.rect.width, self.rect.height)
+          if attack_range.colliderect(target.rect):
+              push_distance = 50 if not target.flip else -50
+              target.rect.x += push_distance
+              target.health -= 15
+              target.hit = True
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -68,6 +87,9 @@ class Fighter():
       #check player 1 controls
       if self.player == 1:
         #movement
+        # Player 1 - golpe especial
+        if key[pygame.K_y] and self.special_energy >= self.special_cost and not self.defending:
+            self.special_attack(target)
 
         if key[pygame.K_a] and not self.defending:
           dx = -speed
@@ -105,9 +127,6 @@ class Fighter():
             self.defense_hits_taken = 0  # reset contador
             self.defense_broken = False
 
-
-
-
       if self.defense_key_held and not self.defense_broken:
         if not self.defending:
           self.defending = True
@@ -124,6 +143,10 @@ class Fighter():
       #check player 2 controls
       if self.player == 2:
         #movement
+        # Player 2 - golpe especial
+        if key[pygame.K_KP0] and self.special_energy >= self.special_cost and not self.defending:
+            self.special_attack(target)
+
         if key[pygame.K_LEFT] and not self.defending:
           dx = -speed
           self.running = True
@@ -223,6 +246,7 @@ class Fighter():
       self.update_time = pygame.time.get_ticks()
     #check if the animation has finished
     if self.frame_index >= len(self.animation_list[self.action]):
+      self.using_special = False
       #if the player is dead then end the animation
       if self.alive == False:
         self.frame_index = len(self.animation_list[self.action]) - 1
@@ -244,6 +268,10 @@ class Fighter():
 
     if self.action == 5:
       self.defense_broken = False  #limpa estado de defesa quebrada
+      
+    # regeneração lenta da barra de especial
+    if self.special_energy < self.max_special_energy:
+        self.special_energy += 0.2
 
   def attack(self, target):
     if self.attack_cooldown == 0:
