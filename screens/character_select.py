@@ -1,61 +1,76 @@
 import pygame
 import sys
-from data.screen import SCREEN, SCREEN_HEIGHT
+from data.screen import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from data.colors import WHITE, YELLOW
 from data.avaliable_caracters import AVALIABLE_CARACTERS
 from fighters.fighterPlayer import FighterPlayer
 from utils.fonts import get_font
 from utils.draw import draw_text
 
+def draw_text_centered(text, font, color, y):
+    img = font.render(text, True, color)
+    x = (SCREEN_WIDTH - img.get_width()) // 2
+    SCREEN.blit(img, (x, y))
+
 def character_select(game_state):
     selected = []
     background = pygame.image.load("assets/images/menu/fundo_selecao.png")
     waiting_for_mouse_release = True
 
+    positions = [
+        (350, 200), (650, 200),
+        (350, 380), (650, 380)
+    ]
+
     while True:
         SCREEN.blit(background, (0, 0))
-        draw_text("Selecione os Personagens (Clique nos dois)", get_font(25), WHITE, 200, 50)
+        draw_text_centered("Selecione os Personagens (Clique nos dois)", get_font(25), WHITE, 40)
         mouse_pos = pygame.mouse.get_pos()
-        x = 150
-        
-        # Loop para renderização de possiveis personagens
-        for key, data in AVALIABLE_CARACTERS.items():
-            image_scaled = pygame.transform.scale(data["icon"], (150, 250))
-            rect = image_scaled.get_rect(center=(x, SCREEN_HEIGHT//2))
+
+        rects = []  # Para armazenar posições clicáveis com chave
+
+        for idx, (key, data) in enumerate(AVALIABLE_CARACTERS.items()):
+            if idx >= len(positions):
+                break
+
+            x, y = positions[idx]
+            image_scaled = pygame.transform.scale(data["icon"], (100, 100))
+            rect = image_scaled.get_rect(center=(x, y))
             SCREEN.blit(image_scaled, rect.topleft)
 
-            draw_text(data["name"], get_font(20), WHITE, x, rect.bottom)
-            x += 250
+            name_text = get_font(20).render(data["name"], True, WHITE)
+            name_rect = name_text.get_rect(center=(rect.centerx, rect.bottom + 15))
+            SCREEN.blit(name_text, name_rect)
 
             if rect.collidepoint(mouse_pos):
                 pygame.draw.rect(SCREEN, YELLOW, rect, 3)
+
+            rects.append((rect, key))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                for key, data in AVALIABLE_CARACTERS.items():
-                    image_scaled = pygame.transform.scale(data["icon"], (150, 250))
-                    rect = image_scaled.get_rect(center=(150 + list(AVALIABLE_CARACTERS.keys()).index(key) * 250, SCREEN_HEIGHT//2))
-                    if rect.collidepoint(event.pos):
-                        if key not in selected:
-                            selected.append(key)
+                for rect, key in rects:
+                    if rect.collidepoint(event.pos) and key not in selected:
+                        selected.append(key)
+                        pygame.time.wait(300)
 
         if len(selected) == 2:
-                # Construindo lutadores
-                char_config = AVALIABLE_CARACTERS[selected[0]]
-                game_state["player1"] = FighterPlayer(
-                    name=char_config["name"],animation_steps=char_config["animation_steps"],
-                    sprite_sheet=char_config["sheet_path"],icon=char_config["icon"],
-                    data=char_config["data"],player=1,x=200,y=310,flip=False)
-                
-                char_config = AVALIABLE_CARACTERS[selected[1]]
-                game_state["player2"] = FighterPlayer(
-                    name=char_config["name"],animation_steps=char_config["animation_steps"],
-                    sprite_sheet=char_config["sheet_path"],icon=char_config["icon"],
-                    data=char_config["data"], player=2, x=700, y=310, flip=True)
-                
-                return  # Avança para a próxima tela
+            # Construindo lutadores
+            char_config = AVALIABLE_CARACTERS[selected[0]]
+            game_state["player1"] = FighterPlayer(
+                name=char_config["name"], animation_steps=char_config["animation_steps"],
+                sprite_sheet=char_config["sheet_path"], icon=char_config["icon"],
+                data=char_config["data"], player=1, x=200, y=310, flip=False)
+
+            char_config = AVALIABLE_CARACTERS[selected[1]]
+            game_state["player2"] = FighterPlayer(
+                name=char_config["name"], animation_steps=char_config["animation_steps"],
+                sprite_sheet=char_config["sheet_path"], icon=char_config["icon"],
+                data=char_config["data"], player=2, x=700, y=310, flip=True)
+
+            return  # Avança para a próxima tela
 
         pygame.display.update()

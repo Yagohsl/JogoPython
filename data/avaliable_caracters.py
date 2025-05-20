@@ -20,14 +20,14 @@ AVALIABLE_CARACTERS = {
             "name": "General Grievous",
             "animation_steps": [3, 8, 1, 8, 8, 3, 7, 5, 3],
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/general.png"),
-            "icon": pygame.image.load("assets/images/jogo/fighters/icons/grievious.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/general_grevious_icon.png"),
             "data": [162, 3, [72, 40]]
         },
         "Female_Jedi": {
             "name": "Maria Jedi Sousa",
             "animation_steps": [5, 10, 1, 8, 8, 3, 7, 5, 3],
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/female_jedi.png"),
-            "icon": pygame.image.load("assets/images/jogo/fighters/icons/anakin.png"),
+            "icon": pygame.image.load("assets/images/jogo/fighters/icons/maria_jedi_icon.png"),
             "data": [162, 3, [72, 40]]
         }
     }
