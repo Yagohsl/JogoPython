@@ -19,8 +19,7 @@ def map_select_screen(game_state):
 
     # Posições fixas para exibir os mapas
     positions = [
-        (350, 250), (650, 250),
-        (350, 430), (650, 430)
+        (230, SCREEN_HEIGHT-400), (770, SCREEN_HEIGHT-400),(SCREEN_WIDTH//2, 450)
     ]
 
     while True:
@@ -34,7 +33,7 @@ def map_select_screen(game_state):
                 break  # Evita ultrapassar o número de posições disponíveis
 
             x, y = positions[idx]
-            image_scaled = pygame.transform.scale(map_images[key], (200, 100))
+            image_scaled = pygame.transform.scale(map_images[key], (400, 200))
             rect = image_scaled.get_rect(center=(x, y))
             SCREEN.blit(image_scaled, rect.topleft)
 

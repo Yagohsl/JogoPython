@@ -15,9 +15,7 @@ def run_game():
         menu_screen.run()
 
         character_select(game_state)
-        print("chegou no mapa")
         map_select_screen(game_state)
-        print("saiu do mapa")
 
         batle_screen = BattleScreen(game_state)
         batle_screen.run()

@@ -15,11 +15,10 @@ def draw_text_centered(text, font, color, y):
 def character_select(game_state):
     selected = []
     background = pygame.image.load("assets/images/menu/fundo_selecao.png")
-    waiting_for_mouse_release = True
 
     positions = [
-        (350, 200), (650, 200),
-        (350, 380), (650, 380)
+        (170, 200), (500, 200),(800, 200),
+        (320, 400), (670, 400)
     ]
 
     while True:
@@ -34,7 +33,7 @@ def character_select(game_state):
                 break
 
             x, y = positions[idx]
-            image_scaled = pygame.transform.scale(data["icon"], (100, 100))
+            image_scaled = pygame.transform.scale(data["icon"], (150, 150))
             rect = image_scaled.get_rect(center=(x, y))
             SCREEN.blit(image_scaled, rect.topleft)
 
