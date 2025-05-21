@@ -10,7 +10,7 @@ AVALIABLE_CARACTERS = {
             "data": [162, 3, [72, 40]]
         },
         "Obiwan": {
-            "name": "Obi-Wan Kenobi",
+            "name": "obi-Wan Kenobi",
             "animation_steps": [8, 8, 1, 8, 8, 3, 7, 5, 4],
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/fighter2.png"),
             "icon": pygame.image.load("assets/images/jogo/fighters/icons/obiwan.png"),

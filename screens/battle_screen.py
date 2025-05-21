@@ -1,5 +1,5 @@
 import pygame, sys
-from data.screen import SCREEN, VERSUS_IMAGE, VICTORY_IMAGE, draw_health_bar, SCREEN_WIDTH, SCREEN_HEIGHT
+from data.screen import SCREEN, VERSUS_IMAGE, VICTORY_IMAGE, draw_health_bar, SCREEN_WIDTH, SCREEN_HEIGHT, draw_power_bar
 from utils.draw import draw_text
 from utils.fonts import get_font
 from data.colors import WHITE
@@ -17,7 +17,6 @@ class BattleScreen:
         self.round_over = False
         self.round_over_cooldown = 2000
         
-
     def run(self):
         SCALED_BACKGROUND = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
         clock = pygame.time.Clock()
@@ -26,29 +25,24 @@ class BattleScreen:
 
             clock.tick(60)
 
-
-
-
-            
             #icones
             SCREEN.blit(self.fighter1.icon, (20, 5))
             SCREEN.blit(self.fighter2.icon, (890, 5))
             SCREEN.blit(VERSUS_IMAGE, (410, 40))
 
             #status dos jogadores
-            draw_health_bar(self.fighter1.health, 20, 100)
-            draw_health_bar(self.fighter2.health, 580, 100)
+            draw_health_bar(self.fighter1.health, 20, 100, 1)
+            draw_health_bar(self.fighter2.health, 580, 100, 2)
 
-            # Desenha barra de energia especial
-            pygame.draw.rect(SCREEN, (0, 0, 255), (self.fighter1.rect.x, self.fighter1.rect.y - 20, self.fighter1.special_energy, 10))
-            pygame.draw.rect(SCREEN, (0, 0, 255), (self.fighter2.rect.x, self.fighter2.rect.y - 20, self.fighter2.special_energy, 10))
+            #status dos jogadores
+            draw_power_bar(self.fighter1.special_energy, 20, 120, 1)
+            draw_power_bar(self.fighter2.special_energy, 680, 120, 2)
 
             #inserindo nomes
             draw_text(self.fighter1.name, get_font(25), WHITE, 110, 50)
             draw_text(self.fighter2.name, get_font(25), WHITE, 580, 50)
-            draw_text("p1: " + str(self.score[0]), get_font(25), WHITE, 20, 130)
+            draw_text("p1: " + str(self.score[0]), get_font(25), WHITE, 350, 130)
             draw_text("p2: " + str(self.score[1]), get_font(25), WHITE, 580, 130)
-
 
             #recontagem
             if self.intro_count <= 0:
@@ -66,7 +60,6 @@ class BattleScreen:
             self.fighter2.update()
             self.fighter1.draw(SCREEN)
             self.fighter2.draw(SCREEN)
-
 
             #verificando derrota
             if self.round_over == False:
@@ -95,9 +88,6 @@ class BattleScreen:
                     self.intro_count = 3
                     self.fighter1.reset()
                     self.fighter2.reset()
-
-
-
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
