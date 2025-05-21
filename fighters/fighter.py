@@ -8,10 +8,11 @@ class Fighter():
     self.offset = data[2]
     self.flip = flip
     self.animation_list = self.load_images(sprite_sheet, animation_steps)
-    self.action = 0#0:idle #1:run #2:jump #3:attack1 #4: attack2 #5:hit #6:death #mortal
+    self.action = 0 #0:idle #1:run #2:jump #3:attack1 #4:attack2 #5:hit #6:death #7:mortal #8:defense
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
+    self.start_x = x
     self.rect = pygame.Rect((x, y, 80, 180))
     self.vel_y = 0
     self.running = False
@@ -31,6 +32,28 @@ class Fighter():
     self.defense_break_threshold = 3  #número de hits antes de quebrar defesa
     self.defense_hits_taken = 0  #contador de hits enquanto defende
     self.defense_broken = False  #estado de defesa quebrada
+    self.special_energy = 100
+    self.max_special_energy = 100
+    self.special_cost = 30
+    self.using_special = False
+
+  def special_attack(self, target):
+    if not self.attacking and self.attack_cooldown == 0:
+      self.attacking = True
+      self.using_special = True
+      self.attack_type = 3  # você pode mudar se tiver uma animação própria
+      self.attack_sound.play()
+      self.special_energy -= self.special_cost
+      self.attack_cooldown = 100
+
+      attack_range = pygame.Rect(self.rect.centerx - (2.5 * self.rect.width * self.flip), self.rect.y, 2.5 * self.rect.width, self.rect.height)
+      if attack_range.colliderect(target.rect):
+        push_distance = -200 if not target.flip else 200
+        target.rect.x += push_distance
+        target.health -= 15
+        target.hit = True
+
+      self.using_special = False
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -43,6 +66,11 @@ class Fighter():
       animation_list.append(temp_img_list)
     return animation_list
 
+  def reset(self):
+    self.health = 100
+    self.alive = True
+    self.rect.x = self.start_x
+    self.hit = False
 
   def move(self, screen_width, screen_height, surface, target, round_over):
     speed = 6
@@ -61,6 +89,9 @@ class Fighter():
       #check player 1 controls
       if self.player == 1:
         #movement
+        # Player 1 - golpe especial
+        if key[pygame.K_y] and self.special_energy >= self.special_cost and not self.defending:
+            self.special_attack(target)
 
         if key[pygame.K_a] and not self.defending:
           dx = -speed
@@ -98,9 +129,6 @@ class Fighter():
             self.defense_hits_taken = 0  # reset contador
             self.defense_broken = False
 
-
-
-
       if self.defense_key_held and not self.defense_broken:
         if not self.defending:
           self.defending = True
@@ -117,6 +145,10 @@ class Fighter():
       #check player 2 controls
       if self.player == 2:
         #movement
+        # Player 2 - golpe especial
+        if key[pygame.K_KP0] and self.special_energy >= self.special_cost and not self.defending:
+            self.special_attack(target)
+
         if key[pygame.K_LEFT] and not self.defending:
           dx = -speed
           self.running = True
@@ -139,9 +171,7 @@ class Fighter():
         
         elif (key[pygame.K_0] or key[pygame.K_KP2]) and not self.defending:
           self.attack(target)
-          self.attack_type = 2
-
-        
+          self.attack_type = 2    
 
     #apply gravity
     self.vel_y += gravity
@@ -171,7 +201,6 @@ class Fighter():
     self.rect.x += dx
     self.rect.y += dy
 
-
   #handle animation updates
   def update(self):
     #check what action the player is performing
@@ -188,6 +217,8 @@ class Fighter():
 
       elif self.attack_type == 2:
         self.update_action(4)#4:attack2
+      elif self.attack_type == 3:
+        self.update_action(9) #special attack
         
     elif self.jump == True and self.running == False:
       self.update_action(2)#2:jump
@@ -204,7 +235,7 @@ class Fighter():
     animation_cooldown = 70
 
     #velocidade de cada animação
-    animation_speeds = [100, 70, 70, 50, 50, 70,160, 150, 50]
+    animation_speeds = [100, 70, 70, 50, 50, 70,160, 150, 50, 50]
     animation_cooldown = animation_speeds[self.action]
 
     #update image
@@ -216,6 +247,7 @@ class Fighter():
       self.update_time = pygame.time.get_ticks()
     #check if the animation has finished
     if self.frame_index >= len(self.animation_list[self.action]):
+      self.using_special = False
       #if the player is dead then end the animation
       if self.alive == False:
         self.frame_index = len(self.animation_list[self.action]) - 1
@@ -225,7 +257,7 @@ class Fighter():
       else:
         self.frame_index = 0
         #check if an attack was executed
-        if self.action == 3 or self.action == 4:
+        if self.action == 3 or self.action == 4 or self.action == 9:
           self.attacking = False
           self.attack_cooldown = 20
         #check if damage was taken
@@ -237,6 +269,10 @@ class Fighter():
 
     if self.action == 5:
       self.defense_broken = False  #limpa estado de defesa quebrada
+      
+    # regeneração lenta da barra de especial
+    if self.special_energy < self.max_special_energy:
+        self.special_energy += 0.05
 
   def attack(self, target):
     if self.attack_cooldown == 0:
@@ -258,8 +294,6 @@ class Fighter():
           target.health -= 10
           target.hit = True
         
-
-
   def update_action(self, new_action):
     #check if the new action is different to the previous one
     if new_action != self.action:
