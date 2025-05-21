@@ -293,8 +293,6 @@ class Fighter():
           target.health -= 10
           target.hit = True
         
-
-
   def update_action(self, new_action):
     #check if the new action is different to the previous one
     if new_action != self.action:
