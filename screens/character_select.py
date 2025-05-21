@@ -53,7 +53,7 @@ def character_select(game_state):
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for rect, key in rects:
-                    if rect.collidepoint(event.pos) and key not in selected:
+                    if rect.collidepoint(event.pos):
                         selected.append(key)
                         pygame.time.wait(300)
 

@@ -38,19 +38,23 @@ class Fighter():
     self.using_special = False
 
   def special_attack(self, target):
-      if not self.attacking and self.attack_cooldown == 0:
-          self.attacking = True
-          self.using_special = True
-          self.attack_type = 3  # você pode mudar se tiver uma animação própria
-          self.special_energy -= self.special_cost
-          self.attack_sound.play()
+    if not self.attacking and self.attack_cooldown == 0:
+      self.attacking = True
+      self.using_special = True
+      self.attack_type = 3  # você pode mudar se tiver uma animação própria
+      self.attack_sound.play()
+      self.special_energy -= self.special_cost
+      self.attack_cooldown = 100
 
-          attack_range = pygame.Rect(self.rect.centerx - (2.5 * self.rect.width * self.flip), self.rect.y, 2.5 * self.rect.width, self.rect.height)
-          if attack_range.colliderect(target.rect):
-              push_distance = 50 if not target.flip else -50
-              target.rect.x += push_distance
-              target.health -= 15
-              target.hit = True
+      attack_range = pygame.Rect(self.rect.centerx - (2.5 * self.rect.width * self.flip), self.rect.y, 2.5 * self.rect.width, self.rect.height)
+      if attack_range.colliderect(target.rect):
+        push_distance = -200 if not target.flip else 200
+        target.rect.x += push_distance
+        target.health -= 15
+        target.hit = True
+
+      self.attacking = False
+      self.using_special = False
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -68,7 +72,6 @@ class Fighter():
     self.alive = True
     self.rect.x = self.start_x
     self.hit = False
-
 
   def move(self, screen_width, screen_height, surface, target, round_over):
     speed = 6
@@ -169,9 +172,7 @@ class Fighter():
         
         elif (key[pygame.K_0] or key[pygame.K_KP2]) and not self.defending:
           self.attack(target)
-          self.attack_type = 2
-
-        
+          self.attack_type = 2    
 
     #apply gravity
     self.vel_y += gravity
@@ -200,7 +201,6 @@ class Fighter():
     #update player position
     self.rect.x += dx
     self.rect.y += dy
-
 
   #handle animation updates
   def update(self):
@@ -271,7 +271,7 @@ class Fighter():
       
     # regeneração lenta da barra de especial
     if self.special_energy < self.max_special_energy:
-        self.special_energy += 0.2
+        self.special_energy += 0.05
 
   def attack(self, target):
     if self.attack_cooldown == 0:

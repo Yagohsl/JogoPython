@@ -28,7 +28,6 @@ class MenuScreen:
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.play_button.checkForInput(mouse_pos):
-                        pygame.time.delay(1000)
                         return
                     if self.credits_button.checkForInput(mouse_pos):
                         credit_screen()

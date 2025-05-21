@@ -16,6 +16,8 @@ class BattleScreen:
         self.score = [0, 0]
         self.round_over = False
         self.round_over_cooldown = 2000
+        pygame.mixer.music.load("assets/audio/music.mp3")
+        pygame.mixer.music.play(-1)
         
     def run(self):
         SCALED_BACKGROUND = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
