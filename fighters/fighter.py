@@ -53,7 +53,6 @@ class Fighter():
         target.health -= 15
         target.hit = True
 
-      self.attacking = False
       self.using_special = False
 
   def load_images(self, sprite_sheet, animation_steps):
@@ -218,6 +217,8 @@ class Fighter():
 
       elif self.attack_type == 2:
         self.update_action(4)#4:attack2
+      elif self.attack_type == 3:
+        self.update_action(9) #special attack
         
     elif self.jump == True and self.running == False:
       self.update_action(2)#2:jump
@@ -234,7 +235,7 @@ class Fighter():
     animation_cooldown = 70
 
     #velocidade de cada animação
-    animation_speeds = [100, 70, 70, 50, 50, 70,160, 150, 50]
+    animation_speeds = [100, 70, 70, 50, 50, 70,160, 150, 50, 50]
     animation_cooldown = animation_speeds[self.action]
 
     #update image
@@ -256,7 +257,7 @@ class Fighter():
       else:
         self.frame_index = 0
         #check if an attack was executed
-        if self.action == 3 or self.action == 4:
+        if self.action == 3 or self.action == 4 or self.action == 9:
           self.attacking = False
           self.attack_cooldown = 20
         #check if damage was taken
