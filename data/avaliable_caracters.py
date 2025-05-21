@@ -29,7 +29,8 @@ AVALIABLE_CARACTERS = {
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/female_jedi.png"),
             "icon": pygame.image.load("assets/images/jogo/fighters/icons/maria_jedi_icon.png"),
             "data": [162, 3, [72, 40]]
-        }, "Mestre Diogo": {
+        }, 
+        "Mestre Diogo": {
             "name": "Mestre Diogo Robles",
             "animation_steps": [5, 12, 1, 8, 8, 3, 7, 5, 3,8],
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/mestre_diogo.png"),
