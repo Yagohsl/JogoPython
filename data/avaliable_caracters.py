@@ -4,7 +4,7 @@ import pygame
 AVALIABLE_CARACTERS = {
         "Anakin": {
             "name": "Anakin Skywalker",
-            "animation_steps": [3, 8, 1, 8, 8, 3, 7, 5, 3, 8],
+            "animation_steps": [10, 8, 1, 8, 8, 3, 7, 5, 3, 8],
             "sheet_path": pygame.image.load("assets/images/jogo/fighters/fighterAnakin.png"),
             "icon": pygame.image.load("assets/images/jogo/fighters/icons/anakin.png"),
             "data": [162, 3, [72, 40]]
