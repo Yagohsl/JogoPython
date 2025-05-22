@@ -16,8 +16,8 @@ class BattleScreen:
         self.score = [0, 0]
         self.round_over = False
         self.round_over_cooldown = 2000
-        pygame.mixer.music.load("assets/audio/music.mp3")
-        pygame.mixer.music.play(-1)
+        #pygame.mixer.music.load("assets/audio/music.mp3")
+        #pygame.mixer.music.play(-1)
         
     def run(self):
         SCALED_BACKGROUND = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -25,7 +25,7 @@ class BattleScreen:
         while True:
             SCREEN.blit(SCALED_BACKGROUND, (0, 0))
 
-            clock.tick(60)
+            clock.tick(70)
 
             #icones
             SCREEN.blit(self.fighter1.icon, (20, 5))
@@ -52,7 +52,7 @@ class BattleScreen:
                 self.fighter2.move(SCREEN_WIDTH, SCREEN_HEIGHT,SCREEN, self.fighter1, self.round_over)
             else:
                 #temporizador de contagem
-                draw_text(str(self.intro_count), get_font(25), WHITE, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
+                draw_text(str(self.intro_count), get_font(40), WHITE, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
                 if (pygame.time.get_ticks() - self.last_count_update) >= 1000:
                     self.intro_count -= 1
                     self.last_count_update = pygame.time.get_ticks()

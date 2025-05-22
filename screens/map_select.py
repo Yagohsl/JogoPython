@@ -12,7 +12,8 @@ def draw_text_centered(text, font, color, y):
     SCREEN.blit(img, (x, y))
 
 def map_select_screen(game_state):
-    background = pygame.image.load("assets/images/menu/fundo_selecao.png")
+    background_original = pygame.image.load("assets/images/menu/tela_fundo.jpg")
+    background = pygame.transform.scale(background_original, (SCREEN_WIDTH, SCREEN_HEIGHT))
     map_images = {key: pygame.image.load(data["imagem"]) for key, data in MAPS.items()}
     
     pygame.time.wait(300)  # Espera curta para evitar cliques anteriores

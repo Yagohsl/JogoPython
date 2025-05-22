@@ -52,7 +52,6 @@ class Fighter():
         target.rect.x += push_distance
         target.health -= 15
         target.hit = True
-
       self.using_special = False
 
   def load_images(self, sprite_sheet, animation_steps):

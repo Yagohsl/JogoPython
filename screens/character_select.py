@@ -2,7 +2,7 @@ import pygame
 import sys
 from data.screen import SCREEN, SCREEN_HEIGHT, SCREEN_WIDTH
 from data.colors import WHITE, YELLOW
-from data.avaliable_caracters import AVALIABLE_CARACTERS
+from data.available_characters import AVAILABLE_CHARACTERS
 from fighters.fighterPlayer import FighterPlayer
 from utils.fonts import get_font
 from utils.draw import draw_text
@@ -14,8 +14,9 @@ def draw_text_centered(text, font, color, y):
 
 def character_select(game_state):
     selected = []
-    background = pygame.image.load("assets/images/menu/fundo_selecao.png")
 
+    background_original = pygame.image.load("assets/images/menu/tela_fundo.jpg")
+    background = pygame.transform.scale(background_original, (SCREEN_WIDTH, SCREEN_HEIGHT))
     positions = [
         (170, 200), (500, 200),(800, 200),
         (320, 400), (670, 400)
@@ -28,12 +29,12 @@ def character_select(game_state):
 
         rects = []  # Para armazenar posições clicáveis com chave
 
-        for idx, (key, data) in enumerate(AVALIABLE_CARACTERS.items()):
+        for idx, (key, data) in enumerate(AVAILABLE_CHARACTERS.items()):
             if idx >= len(positions):
                 break
 
             x, y = positions[idx]
-            image_scaled = pygame.transform.scale(data["icon"], (150, 150))
+            image_scaled = pygame.transform.scale(data["icon"], (150, 175))
             rect = image_scaled.get_rect(center=(x, y))
             SCREEN.blit(image_scaled, rect.topleft)
 
@@ -56,15 +57,16 @@ def character_select(game_state):
                         selected.append(key)
                         pygame.time.wait(300)
 
+
         if len(selected) == 2:
             # Construindo lutadores
-            char_config = AVALIABLE_CARACTERS[selected[0]]
+            char_config = AVAILABLE_CHARACTERS[selected[0]]
             game_state["player1"] = FighterPlayer(
                 name=char_config["name"], animation_steps=char_config["animation_steps"],
                 sprite_sheet=char_config["sheet_path"], icon=char_config["icon"],
                 data=char_config["data"], player=1, x=200, y=310, flip=False)
 
-            char_config = AVALIABLE_CARACTERS[selected[1]]
+            char_config = AVAILABLE_CHARACTERS[selected[1]]
             game_state["player2"] = FighterPlayer(
                 name=char_config["name"], animation_steps=char_config["animation_steps"],
                 sprite_sheet=char_config["sheet_path"], icon=char_config["icon"],
