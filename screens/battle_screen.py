@@ -10,14 +10,13 @@ class BattleScreen:
         self.fighter1 = context["player1"]
         self.fighter2 = context["player2"]
         self.background = context["selected_map"]
-        #variaveis do jogo
         self.intro_count = 3
         self.last_count_update = pygame.time.get_ticks()
         self.score = [0, 0]
         self.round_over = False
         self.round_over_cooldown = 2000
-        #pygame.mixer.music.load("assets/audio/music.mp3")
-        #pygame.mixer.music.play(-1)
+        pygame.mixer.music.load("assets/audio/music.mp3")
+        pygame.mixer.music.play(-1)
         
     def run(self):
         SCALED_BACKGROUND = pygame.transform.scale(self.background, (SCREEN_WIDTH, SCREEN_HEIGHT))

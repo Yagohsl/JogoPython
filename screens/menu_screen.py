@@ -10,8 +10,8 @@ class MenuScreen:
         self.exit_button = Button(image=pygame.image.load("assets/images/menu/sair.png"), pos=(850, 450))
         background = pygame.image.load("assets/images/menu/FUNDO MENU.png")
         self.background = pygame.transform.smoothscale(background, (1000,600))
-        #pygame.mixer.music.load("assets/audio/musicmenu.mp3")
-        #pygame.mixer.music.play(-1)
+        pygame.mixer.music.load("assets/audio/musicmenu.mp3")
+        pygame.mixer.music.play(-1)
 
         self.cheat_code = [pygame.K_UP, pygame.K_UP, pygame.K_DOWN, pygame.K_DOWN,
                            pygame.K_LEFT, pygame.K_RIGHT, pygame.K_LEFT, pygame.K_RIGHT,
@@ -57,15 +57,11 @@ class MenuScreen:
                     if len(self.cheat_input) > len(self.cheat_code):
                         self.cheat_input.pop(0)
                     if self.cheat_input == self.cheat_code:
-                        print("🔓 Personagem secreto desbloqueado!")
                         self.secret_unlocked = True
                         self.blinking = True  # ativa o efeito piscar
-                        pygame.mixer.music.load("assets/audio/musicmenu.mp3")
-                        pygame.mixer.music.play(-1)
                         self.blink_alpha = 0
                         self.blink_direction = 1
                         self.blink_timer = 0
-            pygame.mixer.music.stop()
 
             # Se estiver piscando, atualiza o efeito
             if self.blinking:
